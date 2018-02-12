@@ -1,0 +1,24 @@
+{
+  "name": "node-red-contrib-mystrom",
+  "version": "0.0.1",
+  "license": "MIT",
+  "description": "node-red-contrib-mystrom is a [Node-RED](https://nodered.org/) package containing nodes for using _myStrom_ smart devices.",
+  "repository": "github:dwettstein/node-red-contrib-mystrom",
+  "keywords": [
+    "Node-RED", "node-red", "myStrom", "mystrom", "smart devices", "smart-devices", "home automation", "home-automation"
+  ],
+  "node-red": {
+    "nodes": {
+      "mystrom-switch-config": "mystrom-switch-config/mystrom-switch-config.js",
+      "myStrom Switch": "mystrom-switch/mystrom-switch.js"
+    }
+  },
+  "scripts": {
+    "lint": "./node_modules/.bin/eslint ."
+  },
+  "dependencies": {
+  },
+  "devDependencies": {
+    "eslint": "^4.0.0"
+  }
+}

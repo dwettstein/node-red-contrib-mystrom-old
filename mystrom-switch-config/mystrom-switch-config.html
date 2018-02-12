@@ -1,0 +1,33 @@
+<script type="text/javascript">
+    RED.nodes.registerType('mystrom-switch-config', {
+        category: 'config',
+        defaults: {
+            address: {value: '192.168.1.100 or myStrom-Bulb-2C4AF6', required: true},
+            mac: {value: 'A1B2C3D4E5F6', required: true, validate: RED.validators.regex(/^[0-9A-F]{12}$/)},
+            name: {value: ''}
+        },
+        label: function() {
+            return this.name || ('Switch ' + this.address);
+        },
+        labelStyle: function() {
+            return this.name ? 'node_label_italic' : '';
+        },
+    });
+</script>
+
+<script type="text/x-red" data-template-name="mystrom-switch-config">
+    <div class="form-row">
+        <label for="node-config-input-address"><i class="fa fa-globe"></i> Address</label>
+        <input type="text" id="node-config-input-address" placeholder="IP or hostname">
+    </div>
+
+    <div class="form-row">
+        <label for="node-config-input-mac"><i class="fa fa-globe"></i> MAC</label>
+        <input type="text" id="node-config-input-mac" placeholder="A1B2C3D4E5F6 (without - or :)">
+    </div>
+
+    <div class="form-row">
+        <label for="node-config-input-name"><i class="fa fa-key"></i> Name</label>
+        <input type="text" id="node-config-input-name">
+    </div>
+</script>

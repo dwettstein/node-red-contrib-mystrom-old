@@ -1,0 +1,99 @@
+<script type="text/javascript">
+    RED.nodes.registerType('myStrom Switch', {
+        category: 'myStrom',
+        color: '#00BB00',
+        defaults: {
+            device: {type: 'mystrom-switch-config', required: true},
+            report: {value: ''},
+            action: {value: ''},
+            name: {value: ''}
+        },
+        inputs: 1,
+        outputs: 1,
+        icon: 'envelope.png',
+        label: function() {
+            return this.name || 'Switch ' + this.device + ' ' + this.action;
+        },
+        labelStyle: function() {
+            return this.name ? 'node_label_italic' : '';
+        },
+        oneditprepare: function () {
+            var node = this;
+
+            function getReport(device, callback) {
+                $('#node-input-report').empty();
+                $('#node-input-report-error').remove();
+
+                if (!device && !node.device) {
+                    var deviceOptions = $('#node-input-device option');
+                    // If there is only one device option then it is the option "_ADD_".
+                    if (deviceOptions && deviceOptions.length > 1) {
+                        var firstOption = deviceOptions.first();
+                        if (firstOption.val() !== '_ADD_') {
+                            firstOption.prop('selected', true);
+                            node.device = firstOption.val();
+                            device = node.device;
+                        }
+                    }
+                }
+
+                if (device) {
+                    // See here: https://stackoverflow.com/questions/37265230/node-red-get-configuration-node-value-in-admin-ui
+                    $.getJSON('node-red/switch-report?device=' + device, function(data) {
+                        if (data.statusCode && data.statusCode / 100 != 2) {
+                            $('#node-input-device').parent().after('<div id="node-input-device-error" class="notification notification-error">' + data.error + '</div>');
+                        } else {
+                            $('#node-input-report').val('Powered on: ' + data.relay + ', consumption: ' + data.power);
+
+                            if (callback && typeof callback === 'function') {
+                                callback();
+                            }
+                        }
+                    });
+                }
+            }
+
+            getReport(node.device, null);
+
+            $('#node-input-device').on('click', function() {
+                var selected = $('#node-input-device option:selected').first().val();
+                if (selected && selected !== '_ADD_') {
+                    node.device = selected;
+                }
+                $('#node-input-report').val('');
+                $('#node-input-device-error').remove();
+                getReport(node.device, null);
+            });
+        }
+    });
+</script>
+
+<script type="text/x-red" data-template-name="myStrom Switch">
+    <div class="form-row">
+        <label for="node-input-device"><i class="fa fa-tasks"></i> Device</label>
+        <input type="text" id="node-input-device">
+    </div>
+
+    <div class="form-row">
+        <label for="node-input-report"><i class="fa fa-id-card"></i> Report</label>
+        <input type="text" id="node-input-report" readonly>
+    </div>
+
+    <div class="form-row">
+        <label for="node-input-action"><i class="fa fa-arrow-left"></i> Action</label>
+        <select type="text" id="node-input-action" style="width:70%;">
+            <option value="toggle">toggle</option>
+            <option value="on">on</option>
+            <option value="off">off</option>
+        </select>
+    </div>
+
+    <div class="form-row">
+        <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+        <input type="text" id="node-input-name">
+    </div>
+</script>
+
+<script type="text/x-red" data-help-name="myStrom Switch">
+    <p>myStrom Switch</p>
+</script>
